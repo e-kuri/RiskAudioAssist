@@ -4,4 +4,7 @@
     <string name="event_alerts_channel">Event Alerts</string>
     <string name="event_alerts_channel_id">HRE</string>
     <string name="channel_description">Alerts triggered by risky events detections</string>
+    <string name="event_list_title">History</string>
+    <string name="event_statistics_title">Statistics</string>
+    <string name="failures">Failures</string>
 </resources>
