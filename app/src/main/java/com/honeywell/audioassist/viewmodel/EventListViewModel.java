@@ -28,7 +28,6 @@ import java.util.Map;
 public class EventListViewModel extends AndroidViewModel {
 
     private IEventRepository eventRepository;
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy HH:mm:ss");
 
     public EventListViewModel(@NonNull Application application) {
         super(application);
@@ -47,7 +46,7 @@ public class EventListViewModel extends AndroidViewModel {
             @NonNull
             @Override
             public Event parseSnapshot(@NonNull DocumentSnapshot snapshot) {
-                return parseEvent(snapshot);
+                return eventRepository.parseEvent(snapshot);
             }
         }).setLifecycleOwner(owner).build();
     }
@@ -64,50 +63,8 @@ public class EventListViewModel extends AndroidViewModel {
         });
     }
 
-    private Event parseEvent(DocumentSnapshot doc){
-        Event event = new Event();
-        Map<String, Object> snapshot = doc.getData();
-        Object time = snapshot.get(Event.Field.Time.getName());
-        if(time instanceof Long){
-            event.setTime(new Date((Long)time));
-        }else if(time instanceof Date){
-            event.setTime((Date) time);
-        }else if(time instanceof String){
-            try {
-                event.setTime(dateFormat.parse((String) time));
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        }
+    public void getTodaysFailures(){
 
-        Object severity = snapshot.get(Event.Field.Severity.getName());
-        if( severity != null){
-            if(severity instanceof Integer){
-                event.setSeverity((Integer) severity);
-            }else if(severity instanceof String){
-                try{
-                    event.setSeverity(Integer.parseInt((String) severity));
-                }catch (NumberFormatException ex){
-                    event.setSeverity(2);
-                }
-            }else if(severity instanceof Long){
-                event.setSeverity( ((Long)severity).intValue() );
-            }
-        }else{
-            event.setSeverity(2);
-        }
-
-        Object location = snapshot.get(Event.Field.Location.getName());
-        if(location != null){
-            event.setLocation(location.toString());
-        }
-
-        Object type = snapshot.get(Event.Field.Type.getName());
-        if(type != null){
-            event.setType(type.toString());
-        }
-
-        return event;
     }
 
 }
